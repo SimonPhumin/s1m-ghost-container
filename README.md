@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repository provides the necessary configuration for deploying a Ghost instance on an Oracle Cloud free-tier VPS using Ansible and Podman. The setup includes backup and restore functionality for PostgreSQL databases and supports deployment via a reverse proxy like Traefik or Caddy.
+This repository provides the necessary configuration for deploying a Ghost instance on an Oracle Cloud free-tier VPS using Ansible and Podman.
 
 ## Getting Started
 
