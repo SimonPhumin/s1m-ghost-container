@@ -1,0 +1,7 @@
+---
+- name: Execute all accessibility.cool docs Podman playbooks
+  hosts: o-s1m-ghost-container
+  gather_facts: false
+
+- name: Ghost Podman Ansible Playbook
+  import_playbook: ghost/ghost-podman.yml
