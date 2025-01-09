@@ -1,0 +1,91 @@
+---
+- name: ghost podman playbook
+  hosts: o-s1m-ghost-container
+  vars:
+    ghost_version: 5
+    mysql_version: 9
+    client_path: /env/
+    dest_path: /home/opc/podman/ghost
+  tasks:
+    - name: Copy file with ghost config env variables
+      become: true
+      copy:
+        src: "{{ client_path }}"
+        dest: "{{ dest_path }}"
+        owner: opc
+        group: 1000
+
+    - name: Pull latest ghost image {{ ghost_version }}
+      containers.podman.podman_image:
+        name: ghost:{{ ghost_version }}
+
+    - name: Pull latest mysql image {{ mysql_version }}
+      containers.podman.podman_image:
+        name: mysql:{{ mysql_version }}
+
+    - name: Create ghost network
+      containers.podman.podman_network:
+        name: ghost
+        recreate: false
+
+    - name: Create ghost pod
+      containers.podman.podman_pod:
+        name: ghost_pod
+        state: started
+        infra: true
+        recreate: true
+        network:
+          - ghost
+
+    - name: Create ghost data volume
+      containers.podman.podman_volume:
+        state: present
+        name: ghostdata
+        recreate: false
+
+    - name: Create ghost db data volume
+      containers.podman.podman_volume:
+        state: present
+        name: ghostdbdata
+        recreate: false
+
+    - name: Create ghost db container
+      containers.podman.podman_container:
+        name: ghost-db
+        image: mysql:{{ mysql_version }}
+        pod: ghost_pod
+        network:
+          - ghost
+        detach: true
+        state: started
+        recreate: true
+        env_file: "{{ dest_path }}/.db.env"
+        volumes:
+          - "ghostdbdata:/var/lib/mysql/"
+        generate_systemd:
+          path: ~/.config/systemd/user
+          restart_policy: always
+          time: 120
+          names: true
+
+    - name: Create ghost container
+      containers.podman.podman_container:
+        name: ghost
+        image: ghost:{{ ghost_version }}
+        pod: ghost_pod
+        network:
+          - ghost
+        publish:
+          - 2368:2368
+        detach: true
+        privileged: true
+        state: started
+        recreate: false
+        env_file: "{{ dest_path }}/.env"
+        volumes:
+          - "ghostdata:/var/lib/ghost/content/"
+        generate_systemd:
+          path: ~/.config/systemd/user
+          restart_policy: always
+          time: 120
+          names: true
