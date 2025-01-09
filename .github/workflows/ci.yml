@@ -61,10 +61,10 @@ jobs:
   #       with:
   #         python-version: '3.12.1'
 
-  #     - name: Install Ansible and Docker modules
+  #     - name: Install Ansible and Podman modules
   #       run: |
   #         pip install ansible
-  #         ansible-galaxy collection install community.docker
+  #         sudo apt install podman
 
   #     - name: Create inventory from secret
   #       run: echo "${{ secrets.HOST }}" > inventory
@@ -80,8 +80,5 @@ jobs:
   #     - name: Run Ansible Playbook
   #       run: ansible-playbook -vvv -i inventory ./path/to/my/playbook.yml --private-key ~/.ssh/key.pem -u ubuntu
   #       env:
-  #         IMAGE: ghcr.io/{org-name}/{repo-name}/{app-name}:${{ github.sha }}
+  #         IMAGE: ghost:${{ github.sha }}
   #         HOST: ${{ secrets.HOST }}
-  #         GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
-  #         GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
-  #         REPOSITORY_NAME: ghcr.io/{org-name}/{repo-name}/{app-name}
