@@ -47,3 +47,41 @@ jobs:
 
       - name: Check playbook syntax
         run: ansible-playbook main.yml --syntax-check
+
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: test
+
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: '3.12.1'
+
+  #     - name: Install Ansible and Docker modules
+  #       run: |
+  #         pip install ansible
+  #         ansible-galaxy collection install community.docker
+
+  #     - name: Create inventory from secret
+  #       run: echo "${{ secrets.HOST }}" > inventory
+
+  #     - name: Setup SSH Key
+  #       run: |
+  #         mkdir -p ~/.ssh
+  #         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/key.pem
+  #         chmod 600 ~/.ssh/key.pem
+  #         ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+  #         echo "Host *\n IdentityFile ~/.ssh/key.pem" > ~/.ssh/config
+
+  #     - name: Run Ansible Playbook
+  #       run: ansible-playbook -vvv -i inventory ./path/to/my/playbook.yml --private-key ~/.ssh/key.pem -u ubuntu
+  #       env:
+  #         IMAGE: ghcr.io/{org-name}/{repo-name}/{app-name}:${{ github.sha }}
+  #         HOST: ${{ secrets.HOST }}
+  #         GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+  #         GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+  #         REPOSITORY_NAME: ghcr.io/{org-name}/{repo-name}/{app-name}

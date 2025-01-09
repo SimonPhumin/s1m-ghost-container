@@ -1,5 +1,5 @@
 ---
-- name: Execute all accessibility.cool docs Podman playbooks
+- name: Execute all Podman playbooks
   hosts: all
   gather_facts: false
 

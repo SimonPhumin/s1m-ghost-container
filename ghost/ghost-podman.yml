@@ -4,7 +4,7 @@
   vars:
     ghost_version: 5
     mysql_version: 9
-    client_path: /env/
+    client_path: ../ghost/env/
     dest_path: /home/opc/podman/ghost
   tasks:
     - name: Copy file with ghost config env variables
