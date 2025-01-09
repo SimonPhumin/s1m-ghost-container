@@ -20,7 +20,7 @@ Before you begin, ensure the following:
 
 Install the following on your local machine:
 
-- Python 3.12
+- Python 3.13
 - Ansible
 - The required Podman Ansible collection:
 

@@ -1,0 +1,49 @@
+---
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main, dev]
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+
+      - name: Setup python3
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install test dependencies
+        run: pip3 install yamllint ansible ansible-lint
+
+      - name: Install ansible podman container collection
+        run: ansible-galaxy collection install containers.podman
+
+      - name: Lint code
+        run: |
+          yamllint --no-warnings .
+          ansible-lint
+
+  test:
+    needs: [lint]
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+
+      - name: Install test dependencies
+        run: |
+          sudo pip3 install --upgrade pip
+          sudo pip3 install ansible
+
+      - name: Check playbook syntax
+        run: ansible-playbook main.yml --syntax-check
